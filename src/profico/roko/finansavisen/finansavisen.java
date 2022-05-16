@@ -1,11 +1,14 @@
 package profico.roko.finansavisen;
 
 import java.time.Duration;
-import java.util.concurrent.TimeUnit;
-import org.openqa.selenium.*;
+import java.util.List;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.support.ui.Select;
+import org.testng.Assert;
 
 
 
@@ -28,14 +31,29 @@ public class finansavisen {
 		Actions action = new Actions(driver);
 		action.moveToElement(nyheter).perform();
 		
-		//select option
-		WebElement option1 = driver.findElement(By.xpath("//*[@id=\"js-expand-menu\"]/div/nav/ul/li[2]/div[2]/ul/li[11]"));
-		Actions action1 = new Actions(driver);
-		action.moveToElement(option1).perform();
-	
-		WebElement option = driver.findElement(By.id("option"));
-		Select dropdown = new Select(option);
+		//check number of options
+		int ExpectedElementCount = 12;
+		List <WebElement> dropdown_options1 = driver.findElements(By.xpath("//*[@id=\"js-expand-menu\"]/div/nav/ul/li[2]/div[2]/ul/li/a/span"));
+		System.out.println("---------------------\n");
+		for (WebElement webElement : dropdown_options1) {
+			System.out.println(webElement.getText());
+		}
+		System.out.println("-------------------\n" + "COUNT: " + dropdown_options1.size());
 		
-		dropdown.selectByVisibleText("Blogg");
+		Assert.assertEquals(dropdown_options1.size(), ExpectedElementCount, "Expected element count not matched");
+		System.out.println("\n~~Options number test passed~~\n");
+		
+		//check if "Sieste24timer" index is 0 & "Leder" index is 1
+		List <WebElement> dropdown_options = driver.findElements(By.xpath("//*[@id=\"js-expand-menu\"]/div/nav/ul/li[2]/div[2]/ul/li/a/span"));
+		System.out.println("---------------------\n");
+		
+		String index1 = dropdown_options.get(1).toString();
+		String index0 = dropdown_options.get(0).toString();
+		String ExpectedIndex0 = "Siste 24 timer";
+		String ExpectedIndex1 = "Leder";
+	
+		Assert.assertEquals("Expected element not found on index [0]", ExpectedIndex0, index0);
+		Assert.assertEquals("Expected element not found on index [1]", ExpectedIndex1, index1);
+		System.out.println("\n~~Index test passed~~\n");
 	}
 }
